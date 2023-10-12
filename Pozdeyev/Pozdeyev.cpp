@@ -12,9 +12,9 @@ int main() {
     laba_1 laba1;
     laba_2 laba2;
 
-    //laba1.perform();
+    laba1.perform();
 
-    laba2.perform();
+    //laba2.perform();
 
     if (false)
     {

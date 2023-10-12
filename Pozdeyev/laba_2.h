@@ -16,7 +16,7 @@ private:
 	void mono_dilate(const Mat&, Mat&, int);
 	void close(const Mat&, Mat&, int, bool);
 	void open(const Mat&, Mat&, int, bool);
-	void contour_selection(const Mat&, Mat&);
+	void contour_selection(const Mat&, Mat&, int, int);
 	void gradient(const Mat&, Mat&);
 };
 

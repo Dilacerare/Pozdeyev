@@ -22,6 +22,7 @@ void laba_2::perform() {
     bool binShow;
     bool monoShow;
     int apertureSize;
+    int contourSize;
 
     Mat binResult = binaryImage.clone();
     Mat monoResult = grayscaleImage.clone();
@@ -92,7 +93,11 @@ void laba_2::perform() {
             monoShow = true;
             break;
         case 9:
-            contour_selection(grayscaleImage, monoResult);
+            cout << "Enter aperture size: ";
+            cin >> apertureSize;
+            cout << "Enter contour size: ";
+            cin >> contourSize;
+            contour_selection(grayscaleImage, monoResult, apertureSize, contourSize);
             binShow = false;
             monoShow = true;
             break;
@@ -267,39 +272,27 @@ void laba_2::open(const Mat& input_img, Mat& output_img, int aperture_size, bool
     }
 }
 
-void laba_2::contour_selection(const Mat& input_img, Mat& output_img) {
+void laba_2::contour_selection(const Mat& input_img, Mat& output_img, int aperture_size, int contour_size)
+{
+    output_img.zeros(input_img.size(), CV_8U);
 
-    Mat gradientX = cv::Mat::zeros(input_img.size(), CV_32F);
-    Mat gradientY = cv::Mat::zeros(input_img.size(), CV_32F);
+    Mat resultDilateImage = input_img.clone();
+    Mat resultErodeImage = input_img.clone();
+    Mat tempDilateImage = input_img.clone();
+    Mat tempErodeImage = input_img.clone();
 
-    int imageHeight = input_img.rows;
-    int imageWidth = input_img.cols;
+    mono_dilate(input_img, resultDilateImage, aperture_size);
+    mono_erode(input_img, resultErodeImage, aperture_size);
 
-    for (int y = 0; y < imageHeight; ++y) {
-        for (int x = 0; x < imageWidth; ++x) {
-            if (x > 0 && x < imageWidth - 1) {
-                gradientX.at<float>(y, x) = static_cast<float>(input_img.at<uchar>(y, x + 1)) - static_cast<float>(input_img.at<uchar>(y, x - 1));
-            }
-            if (y > 0 && y < imageHeight - 1) {
-                gradientY.at<float>(y, x) = static_cast<float>(input_img.at<uchar>(y + 1, x)) - static_cast<float>(input_img.at<uchar>(y - 1, x));
-            }
-        }
+    for (int i = 1; i < contour_size; i++)
+    {
+        mono_dilate(resultDilateImage, tempDilateImage, aperture_size);
+        mono_erode(resultErodeImage, tempErodeImage, aperture_size);
+
+        resultDilateImage = tempDilateImage.clone();
+        resultErodeImage = tempErodeImage.clone();
     }
-
-    cv::Mat gradientMagnitude = cv::Mat::zeros(input_img.size(), CV_32F);
-    for (int y = 0; y < imageHeight; ++y) {
-        for (int x = 0; x < imageWidth; ++x) {
-            float gx = gradientX.at<float>(y, x);
-            float gy = gradientY.at<float>(y, x);
-            gradientMagnitude.at<float>(y, x) = sqrt(gx * gx + gy * gy);
-        }
-    }
-
-    for (int y = 0; y < imageHeight; ++y) {
-        for (int x = 0; x < imageWidth; ++x) {
-            output_img.at<uchar>(y, x) = static_cast<uchar>(gradientMagnitude.at<float>(y, x));
-        }
-    }
+    output_img = resultDilateImage - resultErodeImage;
 }
 
 void laba_2::gradient(const Mat& input_img, Mat& output_img)
@@ -318,9 +311,9 @@ void laba_2::gradient(const Mat& input_img, Mat& output_img)
         mono_dilate(input_img, tempDilateImage, kernelSizes[i]);
         mono_erode(input_img, tempErodeImage, kernelSizes[i]);
         Mat gradient = tempDilateImage - tempErodeImage;
-        close(gradient, tempGradientImage, kernelSizes[i - 1], false);
+        mono_erode(gradient, tempGradientImage, kernelSizes[i - 1]);
         output_img += tempGradientImage;
     }
 
-    //output_img *= 1/3;
+    output_img = output_img/3;
 }

@@ -17,7 +17,7 @@ void laba_1::perform()
 
     while (check)
     {
-        cout << "Select a filter:\n 1) Gauss Bluray\n 2) Gauss Contour\n 3) Gauss Sharpness\n 4) Difference Of Gaussians\n 5) Canny\n 6) Sobel Contour\n 7) Mosaic\n 8) Aperture Correction\n 9) Median\n 0) Exit\n";
+        cout << "Select a filter:\n 1) Gauss Bluray\n 2) Gauss Contour\n 4) Difference Of Gaussians\n 5) Canny\n 6) Sobel Contour\n 7) Mosaic\n 8) Aperture Correction\n 9) Median\n 0) Exit\n";
         cin >> command;
 
         switch (command)
@@ -34,15 +34,8 @@ void laba_1::perform()
             gauss_contour(image, result, apertureSize, 1.0);
             show = true;
             break;
-        case 3:
-            cout << "Enter aperture size: ";
-            cin >> apertureSize;
-            gauss_sharpness(image, result, apertureSize, 1.0, 0.35);
-            show = true;
-            break;
         case 4:
             difference_of_gaussians(image, result);
-            //result = DoG;
             show = true;
             break;
         case 5:
@@ -62,12 +55,7 @@ void laba_1::perform()
             show = true;
             break;
         case 8:
-            float correctionFactor;
-            cout << "Enter aperture size: ";
-            cin >> apertureSize;
-            cout << "Enter correction factor: ";
-            cin >> correctionFactor;
-            aperture_correction_filter(image, result, apertureSize, correctionFactor);
+            aperture_correction_filter(image, result);
             show = true;
             break;
         case 9:
@@ -261,22 +249,33 @@ void laba_1::mosaic_filter(const Mat& input_img, Mat& output_img, int blockSize)
     }
 }
 
-void laba_1::aperture_correction_filter(const Mat& input_img, Mat& output_img, int aperture_size, float correction_factor)
+void laba_1::aperture_correction_filter(const Mat& input_img, Mat& output_img)
 {
-    for (int i = aperture_size / 2; i < input_img.rows - aperture_size / 2; i++) {
-        for (int j = aperture_size / 2; j < input_img.cols - aperture_size / 2; j++) {
+    Mat kernel = (Mat_<float>(3, 3) << -1, -1, -1, -1, 9, -1, -1, -1, -1);
+
+    for (int i = 1; i < input_img.rows - 1; i++) {
+        for (int j = 1; j < input_img.cols - 1; j++) {
 
             float sum = 0.0;
 
-            for (int x = -aperture_size / 2; x <= aperture_size / 2; x++) {
-                for (int y = -aperture_size / 2; y <= aperture_size / 2; y++) {
-                    sum += input_img.at<uchar>(i + x, j + y);
+            for (int x = -1; x <= 1; x++) {
+                for (int y = -1; y <= 1; y++) {
+                    sum += kernel.at<float>(x + 1, y + 1) * input_img.at<uchar>(i + x, j + y);
                 }
             }
 
-            float average = sum / (aperture_size * aperture_size);
+            if (sum > 255)
+            {
+                output_img.at<uchar>(i, j) = 255;
+                continue;
+            }
+            if (sum < 0)
+            {
+                output_img.at<uchar>(i, j) = 0;
+                continue;
+            }
 
-            output_img.at<uchar>(i, j) = static_cast<uchar>(average * correction_factor);
+            output_img.at<uchar>(i, j) = saturate_cast<uchar>(sum);
         }
     }
 }

@@ -17,7 +17,7 @@ private:
 	void difference_of_gaussians(const Mat&, Mat&);
 	void sobel_contour(const Mat&, Mat&);
 	void mosaic_filter(const Mat&, Mat&, int);
-	void aperture_correction_filter(const Mat&, Mat&, int, float);
+	void aperture_correction_filter(const Mat&, Mat&);
 	void median_filter(const Mat&, Mat&, int);
 };
 
