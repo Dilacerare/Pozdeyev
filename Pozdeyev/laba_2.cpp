@@ -297,23 +297,28 @@ void laba_2::contour_selection(const Mat& input_img, Mat& output_img, int apertu
 
 void laba_2::gradient(const Mat& input_img, Mat& output_img)
 {
-    output_img.zeros(input_img.size(), CV_8U);
-
     int kernelSizes[] = {1, 3, 5, 7 };
     int numKernels = sizeof(kernelSizes) / sizeof(int);
 
     Mat tempDilateImage = output_img.clone();
     Mat tempErodeImage = output_img.clone();
     Mat tempGradientImage = output_img.clone();
+    Mat tempOutput;
 
-    for (int i = 1; i < numKernels; ++i)
+    mono_dilate(input_img, tempDilateImage, kernelSizes[1]);
+    mono_erode(input_img, tempErodeImage, kernelSizes[1]);
+    Mat gradient = tempDilateImage - tempErodeImage;
+    mono_erode(gradient, tempGradientImage, kernelSizes[0]);
+    tempOutput = tempGradientImage;
+
+    for (int i = 2; i < numKernels; ++i)
     {
         mono_dilate(input_img, tempDilateImage, kernelSizes[i]);
         mono_erode(input_img, tempErodeImage, kernelSizes[i]);
         Mat gradient = tempDilateImage - tempErodeImage;
         mono_erode(gradient, tempGradientImage, kernelSizes[i - 1]);
-        output_img += tempGradientImage;
+        tempOutput += tempGradientImage;
     }
 
-    output_img = output_img/3;
+    output_img = tempOutput /3;
 }
