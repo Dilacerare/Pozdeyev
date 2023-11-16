@@ -3,6 +3,7 @@
 #include <iostream>
 #include "laba_1.h"
 #include "laba_2.h"
+#include "laba_3.h"
 
 using namespace cv; 
 using namespace std;
@@ -11,10 +12,13 @@ using namespace std;
 int main() { 
     laba_1 laba1;
     laba_2 laba2;
+    laba_3 laba3;
 
-    laba1.perform();
+    //laba1.perform();
 
-    //laba2.perform();
+    laba2.perform();
+    
+    //laba3.perform();
 
     if (false)
     {

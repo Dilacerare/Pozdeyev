@@ -24,12 +24,18 @@
     <ClCompile Include="laba_2.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="laba_3.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="laba_1.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="laba_2.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="laba_3.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
