@@ -1,5 +1,8 @@
 #include "laba_3.h"
 
+using namespace cv;
+using namespace std;
+
 void laba_3::perform() {
 	//Загрузка изображений с диска
 	Mat img1 = imread("./Sampels/ponarama1.jpg");

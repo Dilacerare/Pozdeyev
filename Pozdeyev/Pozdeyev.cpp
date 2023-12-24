@@ -4,6 +4,7 @@
 #include "laba_1.h"
 #include "laba_2.h"
 #include "laba_3.h"
+#include "laba_4.h"
 
 using namespace cv; 
 using namespace std;
@@ -13,12 +14,15 @@ int main() {
     laba_1 laba1;
     laba_2 laba2;
     laba_3 laba3;
+    laba_4 laba4;
 
     //laba1.perform();
 
-    laba2.perform();
+    //laba2.perform();
     
     //laba3.perform();
+    
+    laba4.perform();
 
     if (false)
     {
